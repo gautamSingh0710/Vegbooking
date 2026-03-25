@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>VegBooking Admin Price Panel</title>
+
+<style>
+
+body{
+font-family:Segoe UI, Arial;
+padding:30px;
+background:#eef2f3;
+display:flex;
+justify-content:center;
+}
+
+.container{
+background:white;
+padding:25px;
+border-radius:10px;
+width:350px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2{
+text-align:center;
+color:#27ae60;
+margin-bottom:20px;
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+}
+
+label{
+font-weight:bold;
+}
+
+input{
+width:120px;
+padding:8px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+.buttons{
+margin-top:20px;
+display:flex;
+gap:10px;
+justify-content:center;
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.saveBtn{
+background:#27ae60;
+color:white;
+}
+
+.resetBtn{
+background:#e74c3c;
+color:white;
+}
+
+.dashboardBtn{
+background:#3498db;
+color:white;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Sabzi Price Update</h2>
+
+<div class="row"><label>Aloo</label><input type="number" id="Aloo"></div>
+<div class="row"><label>Tamatar</label><input type="number" id="Tamatar"></div>
+<div class="row"><label>Mirchi</label><input type="number" id="Mirchi"></div>
+<div class="row"><label>Adrak</label><input type="number" id="Adrak"></div>
+<div class="row"><label>Lasun</label><input type="number" id="Lasun"></div>
+<div class="row"><label>Nimbu</label><input type="number" id="Nimbu"></div>
+<div class="row"><label>Kheera</label><input type="number" id="Kheera"></div>
+<div class="row"><label>Pyaaz</label><input type="number" id="Pyaaz"></div>
+
+<div class="buttons">
+
+<button class="saveBtn" onclick="save()">Save Prices</button>
+
+<button class="resetBtn" onclick="resetPrices()">Reset</button>
+
+<button class="dashboardBtn" onclick="goDashboard()">Dashboard</button>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCDND7sW1roDTB57zudBLjhI7nQBaosY68",
+  authDomain: "veg07-87e7e.firebaseapp.com",
+  databaseURL: "https://veg07-87e7e-default-rtdb.asia-southeast1.firebasedatabase.app", // ✅ FIX
+  projectId: "veg07-87e7e",
+  storageBucket: "veg07-87e7e.firebasestorage.app",
+  messagingSenderId: "638717240569",
+  appId: "1:638717240569:web:6c91b29fc082d21b202e28"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let defaultPrices={
+Aloo:15,
+Tamatar:40,
+Mirchi:140,
+Adrak:120,
+Lasun:160,
+Nimbu:200,
+Kheera:40,
+Pyaaz:30
+};
+
+// -------- Load Prices from Firebase --------
+
+onValue(ref(db,"prices"),(snapshot)=>{
+
+let prices=snapshot.val() || defaultPrices;
+
+for(let veg in prices){
+document.getElementById(veg).value=prices[veg];
+}
+
+});
+
+
+// -------- Save Prices --------
+
+window.save=function(){
+
+let prices={
+Aloo:document.getElementById("Aloo").value,
+Tamatar:document.getElementById("Tamatar").value,
+Mirchi:document.getElementById("Mirchi").value,
+Adrak:document.getElementById("Adrak").value,
+Lasun:document.getElementById("Lasun").value,
+Nimbu:document.getElementById("Nimbu").value,
+Kheera:document.getElementById("Kheera").value,
+Pyaaz:document.getElementById("Pyaaz").value
+};
+
+set(ref(db,"prices"),prices);
+
+alert("Prices Updated Successfully");
+
+}
+
+
+// -------- Reset Prices --------
+
+window.resetPrices=function(){
+
+set(ref(db,"prices"),defaultPrices);
+
+alert("Prices Reset");
+
+}
+
+
+window.goDashboard=function(){
+window.location.href="dashboard.html";
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+/* Modern Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+
+:root {
+    --primary: #27ae60;
+    --secondary: #2ecc71;
+    --dark: #2c3e50;
+    --bg: #f4f7f6;
+    --white: #ffffff;
+}
+
+* { 
+    box-sizing: border-box; 
+    font-family: 'Poppins', sans-serif; 
+    margin: 0; 
+    padding: 0; 
+}
+
+body { 
+    background-color: var(--bg); 
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.container { 
+    width: 100%;
+    max-width: 450px; 
+    background: var(--white); 
+    border-radius: 20px; 
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    margin-bottom: 80px; /* Space for sticky bottom bar */
+}
+
+/* Header */
+.header {
+    background: var(--primary);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.header h2 { font-size: 24px; }
+.header p { font-size: 13px; opacity: 0.9; }
+
+/* User Details Form */
+.user-section { padding: 15px; background: #fff; }
+.input-group { margin-bottom: 12px; }
+label { display: block; margin-bottom: 5px; font-weight: 600; color: var(--dark); font-size: 13px; }
+input[type="text"] { 
+    width: 100%; 
+    padding: 12px; 
+    border: 1.5px solid #eee; 
+    border-radius: 10px; 
+    outline: none;
+    transition: 0.3s;
+}
+input:focus { border-color: var(--primary); }
+
+/* Veg List Area */
+.veg-list { padding: 10px 15px; }
+.veg-card { 
+    display: flex; 
+    align-items: center; 
+    padding: 12px; 
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 15px;
+    margin-bottom: 10px;
+}
+
+.veg-icon { font-size: 25px; margin-right: 12px; }
+.veg-info { flex: 2; }
+.veg-info b { display: block; font-size: 16px; color: var(--dark); }
+.veg-info span { color: var(--primary); font-weight: 600; font-size: 13px; }
+
+.veg-qty { flex: 1; }
+.veg-qty input { 
+    width: 100%; 
+    padding: 8px; 
+    border: 2px solid #eef2f3; 
+    border-radius: 8px; 
+    text-align: center; 
+    font-weight: bold;
+}
+
+/* Bottom Sticky Bar */
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 450px;
+    background: white;
+    padding: 15px;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+    border-radius: 20px 20px 0 0;
+    z-index: 100;
+}
+
+.total-display {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 0 5px;
+}
+.total-amount { font-size: 22px; font-weight: 800; color: var(--dark); }
+
+.btn-whatsapp {
+    width: 100%;
+    background: #25D366;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+}
+
+.btn-whatsapp:active { transform: scale(0.98); }

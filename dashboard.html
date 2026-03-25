@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>VegBooking Owner Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+*{box-sizing:border-box;}
+
+body{
+font-family:Segoe UI, Arial;
+padding:20px;
+background:#eef2f3;
+}
+
+h2{
+color:#27ae60;
+margin-bottom:10px;
+}
+
+.controls{
+margin-bottom:20px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+input{
+padding:10px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+padding:8px 14px;
+cursor:pointer;
+background:#27ae60;
+color:white;
+border:none;
+border-radius:6px;
+font-weight:bold;
+}
+
+.priceBtn{background:#3498db;}
+.deleteBtn{background:#e74c3c;}
+.statusBtn{background:#3498db;}
+
+button:hover{opacity:0.9;}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+th{
+background:#27ae60;
+color:white;
+padding:12px;
+}
+
+td{
+padding:12px;
+border-bottom:1px solid #eee;
+}
+
+.doneRow{background:#e8f8f0;}
+
+.counterBox{
+margin:15px 0;
+font-size:16px;
+font-weight:bold;
+}
+
+.chartBox{
+background:white;
+padding:20px;
+border-radius:10px;
+margin-top:20px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>VegBooking Orders</h2>
+
+<div class="controls">
+
+<input type="text" id="search" placeholder="Search Customer..." onkeyup="searchCustomer()">
+
+<button onclick="showToday()">Today's Orders</button>
+
+<button onclick="downloadCSV()">Download Excel</button>
+
+<button class="priceBtn" onclick="openPricePanel()">Price Panel</button>
+
+</div>
+
+<div class="counterBox">
+Total Orders: <span id="totalOrders">0</span> |
+Pending: <span id="pendingOrders">0</span> |
+Completed: <span id="completedOrders">0</span> |
+Revenue: ₹ <span id="revenue">0</span> |
+Today Revenue: ₹ <span id="todayRevenue">0</span>
+</div>
+
+<table>
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Address</th>
+<th>Items</th>
+<th>Total</th>
+<th>Date</th>
+<th>Time</th>
+<th>Status</th>
+<th>Delete</th>
+</tr>
+</thead>
+
+<tbody id="orders"></tbody>
+
+</table>
+
+<div class="chartBox">
+<h3>Daily Sales Graph</h3>
+<canvas id="salesChart"></canvas>
+</div>
+<script type="module">
+
+// 🔒 LOGIN CHECK
+if(localStorage.getItem("adminLogin")!=="true"){
+  location.href="login.html";
+}
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCDND7sW1roDTB57zudBLjhI7nQBaosY68",
+  authDomain: "veg07-87e7e.firebaseapp.com",
+  databaseURL: "https://veg07-87e7e-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "veg07-87e7e",
+  storageBucket: "veg07-87e7e.firebasestorage.app",
+  messagingSenderId: "638717240569",
+  appId: "1:638717240569:web:6c91b29fc082d21b202e28"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let orders=[];
+let keys=[];
+let chart=null;
+
+
+// 🔴 REALTIME ORDERS
+onValue(ref(db,"orders"),(snapshot)=>{
+
+  let data=snapshot.val();
+  orders=[];
+  keys=[];
+
+  if(!data){
+    displayOrders([]);
+    return;
+  }
+
+  for(let id in data){
+    orders.push(data[id]);
+    keys.push(id);
+  }
+
+  displayOrders(orders);
+});
+
+
+// 🔵 DISPLAY ORDERS
+function displayOrders(data){
+
+  let html="";
+  let pending=0;
+  let completed=0;
+  let revenue=0;
+  let todayRevenue=0;
+
+  let today=new Date().toLocaleDateString();
+
+  data.forEach((o,index)=>{
+
+    let status=o.status || "Pending";
+
+    if(status==="Done"){completed++} else{pending++}
+
+    revenue+=parseFloat(o.total);
+
+    if(o.date==today){
+      todayRevenue+=parseFloat(o.total)
+    }
+
+    let rowClass=status==="Done"?"doneRow":"";
+    let itemsFormatted=o.items.split(",").map(i=>"• "+i.trim()).join("<br>");
+
+    html+=`
+    <tr class="${rowClass}">
+      <td>${o.name}</td>
+      <td>${o.address}</td>
+      <td>${itemsFormatted}</td>
+      <td>₹${o.total}</td>
+      <td>${o.date}</td>
+      <td>${o.time}</td>
+
+      <td>
+        <button class="statusBtn" onclick="markDone(${index})">${status}</button>
+      </td>
+
+      <td>
+        <button class="deleteBtn" onclick="deleteOrder(${index})">Delete</button>
+      </td>
+    </tr>
+    `;
+  });
+
+  document.getElementById("orders").innerHTML=html;
+
+  document.getElementById("totalOrders").innerText=data.length;
+  document.getElementById("pendingOrders").innerText=pending;
+  document.getElementById("completedOrders").innerText=completed;
+
+  document.getElementById("revenue").innerText=revenue.toFixed(2);
+  document.getElementById("todayRevenue").innerText=todayRevenue.toFixed(2);
+
+  drawGraph();
+}
+
+
+// 🔴 DELETE ORDER
+window.deleteOrder=function(i){
+  remove(ref(db,"orders/"+keys[i]));
+}
+
+
+// 🔵 MARK DONE
+window.markDone=function(i){
+  update(ref(db,"orders/"+keys[i]),{status:"Done"});
+}
+
+
+// 🔍 SEARCH (FIXED)
+window.searchCustomer=function(){
+  let text=document.getElementById("search").value.toLowerCase();
+  let filtered=orders.filter(o=>o.name.toLowerCase().includes(text));
+  displayOrders(filtered);
+}
+
+
+// 📅 TODAY ORDERS (FIXED)
+window.showToday=function(){
+  let today=new Date().toLocaleDateString();
+  let filtered=orders.filter(o=>o.date==today);
+  displayOrders(filtered);
+}
+
+
+// 💰 PRICE PANEL (FIXED)
+window.openPricePanel=function(){
+  window.location.href="admin-price.html";
+}
+
+
+// 📊 DOWNLOAD CSV (FIXED)
+window.downloadCSV=function(){
+
+  let csv="Name,Address,Items,Total,Date,Time,Status\n";
+
+  orders.forEach(o=>{
+    csv+=`${o.name},${o.address},${o.items},${o.total},${o.date},${o.time},${o.status}\n`;
+  });
+
+  let blob=new Blob([csv],{type:"text/csv"});
+  let url=URL.createObjectURL(blob);
+
+  let a=document.createElement("a");
+  a.href=url;
+  a.download="vegbooking_orders.csv";
+  a.click();
+}
+
+
+// 📈 GRAPH
+function drawGraph(){
+
+  let sales={};
+
+  orders.forEach(o=>{
+    let date=o.date;
+    if(!sales[date]) sales[date]=0;
+    sales[date]+=parseFloat(o.total);
+  });
+
+  let labels=Object.keys(sales);
+  let values=Object.values(sales);
+
+  let ctx=document.getElementById("salesChart");
+
+  if(chart){
+    chart.destroy();
+  }
+
+  chart=new Chart(ctx,{
+    type:"line",
+    data:{
+      labels:labels,
+      datasets:[{
+        label:"Daily Sales ₹",
+        data:values,
+        borderColor:"green",
+        fill:false
+      }]
+    }
+  });
+}
+
+</script>
+
+</body>
+</html>

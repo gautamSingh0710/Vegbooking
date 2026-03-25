@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VegBooking</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+.veg-qty {
+  display: flex;
+  gap: 5px;
+}
+.veg-qty input {
+  width: 70%;
+}
+.veg-qty select {
+  width: 30%;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<h2>🥕 VegBooking</h2>
+<p>Fresh Sabzi Order Karein</p>
+</div>
+
+<div class="user-section">
+
+<div class="input-group">
+<label>Naam</label>
+<input type="text" id="userName" placeholder="Apna Naam">
+</div>
+
+<div class="input-group">
+<label>Address</label>
+<input type="text" id="userAddress" placeholder="Pura Address">
+</div>
+
+</div>
+
+<div class="veg-list">
+
+<!-- ALOO -->
+<div class="veg-card">
+<div class="veg-icon">🥔</div>
+<div class="veg-info">
+<b>Aloo</b>
+<span id="priceAloo">₹15/kg</span>
+</div>
+<div class="veg-qty">
+<input type="number" class="gram-input" data-name="Aloo" data-rate="15" oninput="calculate()" placeholder="qty">
+<select class="unit-select" onchange="calculate()">
+<option value="g">g</option>
+<option value="kg">kg</option>
+</select>
+</div>
+</div>
+
+<!-- TAMATAR -->
+<div class="veg-card">
+<div class="veg-icon">🍅</div>
+<div class="veg-info">
+<b>Tamatar</b>
+<span id="priceTamatar">₹40/kg</span>
+</div>
+<div class="veg-qty">
+<input type="number" class="gram-input" data-name="Tamatar" data-rate="40" oninput="calculate()" placeholder="qty">
+<select class="unit-select" onchange="calculate()">
+<option value="g">g</option>
+<option value="kg">kg</option>
+</select>
+</div>
+</div>
+
+<!-- MIRCHI -->
+<div class="veg-card">
+<div class="veg-icon">🌶️</div>
+<div class="veg-info">
+<b>Mirchi</b>
+<span id="priceMirchi">₹140/kg</span>
+</div>
+<div class="veg-qty">
+<input type="number" class="gram-input" data-name="Mirchi" data-rate="140" oninput="calculate()" placeholder="qty">
+<select class="unit-select" onchange="calculate()">
+<option value="g">g</option>
+<option value="kg">kg</option>
+</select>
+</div>
+</div>
+
+<!-- ADRAK -->
+<div class="veg-card">
+<div class="veg-icon">🫚</div>
+<div class="veg-info">
+<b>Adrak</b>
+<span id="priceAdrak">₹120/kg</span>
+</div>
+<div class="veg-qty">
+<input type="number" class="gram-input" data-name="Adrak" data-rate="120" oninput="calculate()" placeholder="qty">
+<select class="unit-select" onchange="calculate()">
+<option value="g">g</option>
+<option value="kg">kg</option>
+</select>
+</div>
+</div>
+
+<!-- LASUN -->
+<div class="veg-card">
+<div class="veg-icon">🧄</div>
+<div class="veg-info">
+<b>Lasun</b>
+<span id="priceLasun">₹160/kg</span>
+</div>
+<div class="veg-qty">
+<input type="number" class="gram-input" data-name="Lasun" data-rate="160" oninput="calculate()" placeholder="qty">
+<select class="unit-select" onchange="calculate()">
+<option value="g">g</option>
+<option value="kg">kg</option>
+</select>
+</div>
+</div>
+
+<!-- NIMBU -->
+<div class="veg-card">
+<div class="veg-icon">🍋</div>
+<div class="veg-info">
+<b>Nimbu</b>
+<span id="priceNimbu">₹200/kg</span>
+</div>
+<div class="veg-qty">
+<input type="number" class="gram-input" data-name="Nimbu" data-rate="200" oninput="calculate()" placeholder="qty">
+<select class="unit-select" onchange="calculate()">
+<option value="g">g</option>
+<option value="kg">kg</option>
+</select>
+</div>
+</div>
+
+<!-- KHEERA -->
+<div class="veg-card">
+<div class="veg-icon">🥒</div>
+<div class="veg-info">
+<b>Kheera</b>
+<span id="priceKheera">₹40/kg</span>
+</div>
+<div class="veg-qty">
+<input type="number" class="gram-input" data-name="Kheera" data-rate="40" oninput="calculate()" placeholder="qty">
+<select class="unit-select" onchange="calculate()">
+<option value="g">g</option>
+<option value="kg">kg</option>
+</select>
+</div>
+</div>
+
+<!-- Pyaaz -->
+<div class="veg-card">
+<div class="veg-icon">🧅</div>
+<div class="veg-info">
+<b>Pyaaz</b>
+<span id="pricePyaaz">₹30/kg</span>
+</div>
+<div class="veg-qty">
+<input type="number" class="gram-input" data-name="Pyaaz" data-rate="30" oninput="calculate()" placeholder="qty">
+<select class="unit-select" onchange="calculate()">
+<option value="g">g</option>
+<option value="kg">kg</option>
+</select>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="bottom-bar">
+
+<div class="total-display">
+<div>Total</div>
+<div class="total-amount">₹ <span id="grandTotal">0.00</span></div>
+</div>
+
+<button class="btn-whatsapp" onclick="sendToWhatsApp()">
+📲 Send Order to Owner
+</button>
+
+</div>
+
+<!-- Firebase JS -->
+<script type="module" src="script.js"></script>
+
+</body>
+</html>

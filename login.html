@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>VegBooking Admin Login</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:Segoe UI, Arial;
+}
+
+body{
+margin:0;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,#27ae60,#2ecc71);
+}
+
+.login-card{
+background:white;
+padding:35px;
+width:330px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+text-align:center;
+}
+
+.logo{
+font-size:40px;
+margin-bottom:10px;
+}
+
+h2{
+color:#27ae60;
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#27ae60;
+color:white;
+border:none;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.error{
+color:red;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-card">
+
+<div class="logo">🥕</div>
+<h2>VegBooking Admin</h2>
+
+<input type="text" id="user" placeholder="Username">
+<input type="password" id="pass" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<div id="error" class="error"></div>
+
+</div>
+
+<script>
+
+if(localStorage.getItem("adminLogin")==="true"){
+location.href="dashboard.html";
+}
+
+function login(){
+
+let u=document.getElementById("user").value;
+let p=document.getElementById("pass").value;
+
+if(u.toLowerCase()==="gautam" && p==="Gautam@200610"){
+
+localStorage.setItem("adminLogin","true");
+location.href="dashboard.html";
+
+}else{
+
+document.getElementById("error").innerText="Wrong Login";
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
